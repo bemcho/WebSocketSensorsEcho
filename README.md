@@ -15,7 +15,8 @@ example julia start web socket, the important is to return the: Sec-WebSocket-Ac
 end
 In WebSocketEcho.ino change webSocketServerUrl  = to your wifi net ip of server
 Response:
-```{
+```
+{
   "ipAddress": "172.30.30.121",
   "environmentTemp": 29.20,
   "environmentTempUnit": "C",
