@@ -6,9 +6,9 @@ example julia start web socket, the important is to return the: Sec-WebSocket-Ac
 ```
 using HTTP,JSON,Plots
 gr()
-xCoord=[]
-yCoord=[]
-zCoord=[]
+gyro=Dict(:x=>[],:y=>[],:z=>[])
+accelero=Dict(:x=>[],:y=>[],:z=>[])
+magneto=Dict(:x=>[],:y=>[],:z=>[])
 @async HTTP.WebSockets.listen("172.30.30.110", UInt16(2001)) do ws
     while !eof(ws)
         data = readavailable(ws)
@@ -20,22 +20,25 @@ end
 function processRequest(json)
     println("---------------------------------------------------------")
     println(json)
-    x,y,z=json["gyroscope"]
-    push!(xCoord,x) 
-    push!(yCoord,y)  
-    push!(zCoord,z)     
     
+    x,y,z=json["gyroscope"]
+    push!(gyro[:x],x)
+    push!(gyro[:y],y)
+    push!(gyro[:z],z)
+
+    display(Plots.plot3d(gyro[:x],gyro[:y],gyro[:z],label="Gyro",color=[:red]))
+
     x,y,z=json["accelerometer"]
-    push!(xCoord,x) 
-    push!(yCoord,y)  
-    push!(zCoord,z) 
+    push!(accelero[:x],x)
+    push!(accelero[:y],y)
+    push!(accelero[:z],z)
+    display(Plots.plot3d!(accelero[:x],accelero[:y],accelero[:z],label="Accelero",color=[:blue]))
 
     x,y,z=json["magnetometer"]
-    push!(xCoord,x) 
-    push!(yCoord,y)  
-    push!(zCoord,z) 
-
-    display(Plots.plot3d(xCoord,yCoord,zCoord,seriestype = :scatter))
+    push!(magneto[:x],x)
+    push!(magneto[:y],y)
+    push!(magneto[:z],z)
+    display(Plots.plot3d!(magneto[:x],magneto[:y],magneto[:z],label="Magneto",color=[:green]))
 end
 ```
 In WebSocketEcho.ino change webSocketServerUrl  = to your wifi net ip of server
