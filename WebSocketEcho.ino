@@ -115,7 +115,6 @@ void readAndSendData()
   char state[2024]={0};
   readSensors(state);
   // Send message to WebSocket server
-  connectWebSocket();
   int res = wsClient->send(state,strlen(state));
   if (res > 0)
   {

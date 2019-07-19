@@ -46,19 +46,19 @@ void setup();
 void loop();
 #line 113 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
 void readAndSendData();
-#line 133 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
+#line 132 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
 void readSensors(char resultJson[]);
-#line 166 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
+#line 165 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
 void showIpAddress(char resultJson[]);
-#line 171 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
+#line 170 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
 void showMotionGyroSensor(char resultJson[]);
-#line 178 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
+#line 177 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
 void showMotionAccelSensor(char resultJson[]);
-#line 185 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
+#line 184 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
 void showPressureSensor(char resultJson[]);
-#line 191 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
+#line 190 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
 void showHumidTempSensor(char resultJson[]);
-#line 201 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
+#line 200 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
 void showMagneticSensor(char resultJson[]);
 #line 37 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
 void initWiFi()
@@ -142,7 +142,6 @@ void readAndSendData()
   char state[2024]={0};
   readSensors(state);
   // Send message to WebSocket server
-  connectWebSocket();
   int res = wsClient->send(state,strlen(state));
   if (res > 0)
   {
