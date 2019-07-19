@@ -3,7 +3,8 @@ Sends sensors data as json to hard coded server url from Azure Iot DevKit device
 
 example julia start web socket, the important is to return the: Sec-WebSocket-Accept header with used value  
 
-```using HTTP,JSON,Plots
+```
+using HTTP,JSON,Plots
 gr()
 xCoord=[]
 yCoord=[]
@@ -39,7 +40,8 @@ end
 ```
 In WebSocketEcho.ino change webSocketServerUrl  = to your wifi net ip of server
 Response:
-```{
+```
+{
   "ipAddress": "172.30.30.121",
   "environmentTemp": 29.20,
   "environmentTempUnit": "C",
