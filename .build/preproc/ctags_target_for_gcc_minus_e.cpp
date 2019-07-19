@@ -9,8 +9,8 @@
 # 8 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino" 2
 DevI2C *ext_i2c;
 LSM6DSLSensor *acc_gyro;
-HTS221Sensor *ht_sensor;
 LIS2MDLSensor *magnetometer;
+HTS221Sensor *ht_sensor;
 IRDASensor *IrdaSensor;
 LPS22HBSensor *pressureSensor;
 RGB_LED rgbLed;
@@ -272,10 +272,8 @@ void readAndSendData()
   pinMode(LED_USER, 0x2);
   digitalWrite(LED_USER, userLEDState);
 
-  char state[500];
-  snprintf(state, 500, "{\"firmwareVersion\":\"%s\",\"wifiSSID\":\"%s\",\"wifiRSSI\":%d,\"wifiIP\":\"%s\",\"wifiMask\":\"%s\",\"macAddress\":\"%s\",\"sensorMotion\":%d,\"sensorPressure\":%d,\"sensorMagnetometer\":%d,\"sensorHumidityAndTemperature\":%d,\"sensorIrda\":%d}", firmwareVersion, wifiSSID, wifiRSSI, wifiIP, wifiMask, macAddress, sensorMotion, sensorPressure, sensorMagnetometer, sensorHumidityAndTemperature, sensorIrda);
-  int len = 0;
-
+  char state[500]={0};
+  readSensors(state);
   // Send message to WebSocket server
   int res = wsClient->send(state,strlen(state));
   if (res > 0)
@@ -288,5 +286,40 @@ void readAndSendData()
   {
     Screen.clean();
     Screen.print(0, "WSend failed:");
+  }
+}
+
+float temperature = 50;
+char temperatureUnit = 'F';
+float humidity = 50;
+char humidityUnit = '%';
+float pressure = 55;
+const char *pressureUnit = "psig";
+void readSensors(char resultJson[])
+{
+  try
+  {
+    ht_sensor->reset();
+    ht_sensor->getTemperature(&temperature);
+    //convert from C to F
+    temperature = temperature*1.8 + 32;
+
+    ht_sensor->getHumidity(&humidity);
+
+    pressureSensor->getPressure(&pressure);
+
+    char buff[128];
+    sprintf(buff, "Environment \r\n Temp:%s%c    \r\n Humidity:%s%c  \r\n Atm: %s%s",f2s(temperature, 1),temperatureUnit, f2s(humidity, 1), humidityUnit, f2s(pressure,1), pressureUnit);
+    Screen.print(buff);
+
+    sprintf(resultJson, "{\"temperature\":%s,\"temperature_unit\":\"%c\",\"humidity\":%s,\"humidity_unit\":\"%c\",\"pressure\":%s,\"pressure_unit\":\"%s\"}", f2s(temperature, 1), temperatureUnit,f2s(humidity, 1), humidityUnit,f2s(pressure, 1), pressureUnit);
+  }
+  catch(int error)
+  {
+    do{ { if (0) { (void)printf("*** Read sensor failed: %d",error); } { LOGGER_LOG l = xlogging_get_log_function(); if (l != 
+# 297 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino" 3 4
+   __null
+# 297 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
+   ) l(AZ_LOG_ERROR, "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino", __func__, 297, 0x01, "*** Read sensor failed: %d",error); } }; }while((void)0,0);
   }
 }
