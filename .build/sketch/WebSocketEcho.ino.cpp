@@ -46,17 +46,19 @@ void setup();
 void loop();
 #line 121 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
 void readAndSendData();
-#line 284 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
+#line 278 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
 void readSensors(char resultJson[]);
-#line 314 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
+#line 311 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
+void showIpAddress(char resultJson[]);
+#line 316 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
 void showMotionGyroSensor(char resultJson[]);
-#line 321 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
+#line 323 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
 void showMotionAccelSensor(char resultJson[]);
-#line 328 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
+#line 330 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
 void showPressureSensor(char resultJson[]);
-#line 341 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
+#line 336 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
 void showHumidTempSensor(char resultJson[]);
-#line 357 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
+#line 346 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
 void showMagneticSensor(char resultJson[]);
 #line 37 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
 void initWiFi()
@@ -300,16 +302,13 @@ void readAndSendData()
   }
 }
 
-float temperature = 50;
-char temperatureUnit = 'F';
-float humidity = 50;
-char humidityUnit = '%';
-float pressure = 55;
-const char *pressureUnit = "psig";
 void readSensors(char resultJson[])
 {
   try
   {
+    char resultIp[64] = {0};
+    showIpAddress(resultIp);
+
     char resultHumidity[128] = {0}; 
     showHumidTempSensor(resultHumidity);
 
@@ -324,7 +323,7 @@ void readSensors(char resultJson[])
 
     char resultMagnet[64] = {0};
     showMagneticSensor(resultMagnet);
-    sprintf(resultJson, "{\"ipAddress\":\"%s\",%s,%s,%s,%s,%s}", WiFi.localIP().get_address(),resultHumidity,resultPressure, resultGyro,resultAccele,resultMagnet);
+    sprintf(resultJson, "{%s,%s,%s,%s,%s,%s}",resultIp ,resultHumidity,resultPressure, resultGyro,resultAccele,resultMagnet);
   }
   catch(int error)
   {
@@ -335,6 +334,11 @@ void readSensors(char resultJson[])
 
 #define READ_ENV_INTERVAL 2000
 static volatile uint64_t msReadEnvData = 0;
+
+void showIpAddress(char resultJson[])
+{
+  sprintf(resultJson,"\"ipAddress\":\"%s\"",WiFi.localIP().get_address());
+}
 
 void showMotionGyroSensor(char resultJson[])
 {
@@ -352,35 +356,22 @@ void showMotionAccelSensor(char resultJson[])
 
 void showPressureSensor(char resultJson[])
 {
-  uint64_t ms = SystemTickCounterRead() - msReadEnvData;
-  if (ms < READ_ENV_INTERVAL)
-  {
-    return;
-  }
-
   float pressure = getDevKitPressureValue();
   sprintf(resultJson, "\"environmentPressure\":%0.2f,\"pressureUnit\":\"hPa\"", pressure);
-  msReadEnvData = SystemTickCounterRead();
 }
 
 void showHumidTempSensor(char resultJson[])
 {
-  uint64_t ms = SystemTickCounterRead() - msReadEnvData;
-  if (ms < READ_ENV_INTERVAL)
-  {
-    return;
-  }
+  
   float tempC = getDevKitTemperatureValue(0);
   float tempF = tempC * 1.8 + 32;
   float humidity = getDevKitHumidityValue();
 
-  sprintf(resultJson, "\"environmentTemp\":%0.2f,\"environmentTempUnit\":\"C\",\"humidity\":%0.2f%", tempC, humidity);
-
-  msReadEnvData = SystemTickCounterRead();
+  sprintf(resultJson, "\"environmentTemp\":%0.2f,\"environmentTempUnit\":\"C\",\"humidity\":%0.2f", tempC, humidity);
 }
 
 void showMagneticSensor(char resultJson[])
 {
   int x, y, z;
   getDevKitMagnetometerValue(&x, &y, &z);
-  sprintf(resultJson, "\"magnetometer\":[ %d, %d, %d]  ", x, y, z);}
+  sprintf(resultJson, "\"magnetometer\":[ %d, %d, %d]", x, y, z);}

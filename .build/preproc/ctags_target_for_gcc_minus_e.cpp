@@ -297,16 +297,13 @@ void readAndSendData()
   }
 }
 
-float temperature = 50;
-char temperatureUnit = 'F';
-float humidity = 50;
-char humidityUnit = '%';
-float pressure = 55;
-const char *pressureUnit = "psig";
 void readSensors(char resultJson[])
 {
   try
   {
+    char resultIp[64] = {0};
+    showIpAddress(resultIp);
+
     char resultHumidity[128] = {0};
     showHumidTempSensor(resultHumidity);
 
@@ -321,7 +318,7 @@ void readSensors(char resultJson[])
 
     char resultMagnet[64] = {0};
     showMagneticSensor(resultMagnet);
-    sprintf(resultJson, "{\"ipAddress\":\"%s\",%s,%s,%s,%s,%s}", WiFi.localIP().get_address(),resultHumidity,resultPressure, resultGyro,resultAccele,resultMagnet);
+    sprintf(resultJson, "{%s,%s,%s,%s,%s,%s}",resultIp ,resultHumidity,resultPressure, resultGyro,resultAccele,resultMagnet);
   }
   catch(int error)
   {
@@ -332,6 +329,11 @@ void readSensors(char resultJson[])
 
 
 static volatile uint64_t msReadEnvData = 0;
+
+void showIpAddress(char resultJson[])
+{
+  sprintf(resultJson,"\"ipAddress\":\"%s\"",WiFi.localIP().get_address());
+}
 
 void showMotionGyroSensor(char resultJson[])
 {
@@ -349,35 +351,22 @@ void showMotionAccelSensor(char resultJson[])
 
 void showPressureSensor(char resultJson[])
 {
-  uint64_t ms = SystemTickCounterRead() - msReadEnvData;
-  if (ms < 2000)
-  {
-    return;
-  }
-
   float pressure = getDevKitPressureValue();
   sprintf(resultJson, "\"environmentPressure\":%0.2f,\"pressureUnit\":\"hPa\"", pressure);
-  msReadEnvData = SystemTickCounterRead();
 }
 
 void showHumidTempSensor(char resultJson[])
 {
-  uint64_t ms = SystemTickCounterRead() - msReadEnvData;
-  if (ms < 2000)
-  {
-    return;
-  }
+
   float tempC = getDevKitTemperatureValue(0);
   float tempF = tempC * 1.8 + 32;
   float humidity = getDevKitHumidityValue();
 
-  sprintf(resultJson, "\"environmentTemp\":%0.2f,\"environmentTempUnit\":\"C\",\"humidity\":%0.2f%", tempC, humidity);
-
-  msReadEnvData = SystemTickCounterRead();
+  sprintf(resultJson, "\"environmentTemp\":%0.2f,\"environmentTempUnit\":\"C\",\"humidity\":%0.2f", tempC, humidity);
 }
 
 void showMagneticSensor(char resultJson[])
 {
   int x, y, z;
   getDevKitMagnetometerValue(&x, &y, &z);
-  sprintf(resultJson, "\"magnetometer\":[ %d, %d, %d]  ", x, y, z);}
+  sprintf(resultJson, "\"magnetometer\":[ %d, %d, %d]", x, y, z);}
