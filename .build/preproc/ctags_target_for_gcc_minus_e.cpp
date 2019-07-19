@@ -89,6 +89,7 @@ void setup()
   isWsConnected = false;
   msgCount = 0;
 
+  initAll();
   int ret = initIoTDevKit(1);
   initWiFi();
   if (hasWifi)
@@ -124,8 +125,7 @@ int sensorPressure;
 int sensorMagnetometer;
 int sensorHumidityAndTemperature;
 int sensorIrda;
-void readAndSendData()
-{
+void initAll(){
   const char *firmwareVersion = getDevkitVersion();
   const char *wifiSSID = WiFi.SSID();
   int wifiRSSI = WiFi.RSSI();
@@ -280,6 +280,10 @@ void readAndSendData()
   pinMode(LED_USER, 0x2);
   digitalWrite(LED_USER, userLEDState);
 
+}
+
+void readAndSendData()
+{
   char state[2024]={0};
   readSensors(state);
   // Send message to WebSocket server

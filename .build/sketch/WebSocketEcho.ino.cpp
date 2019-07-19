@@ -42,23 +42,25 @@ void initWiFi();
 bool connectWebSocket();
 #line 80 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
 void setup();
-#line 96 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
+#line 97 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
 void loop();
-#line 121 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
+#line 122 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
+void initAll();
+#line 263 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
 void readAndSendData();
-#line 278 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
+#line 282 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
 void readSensors(char resultJson[]);
-#line 311 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
+#line 315 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
 void showIpAddress(char resultJson[]);
-#line 316 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
+#line 320 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
 void showMotionGyroSensor(char resultJson[]);
-#line 323 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
+#line 327 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
 void showMotionAccelSensor(char resultJson[]);
-#line 330 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
+#line 334 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
 void showPressureSensor(char resultJson[]);
-#line 336 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
+#line 340 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
 void showHumidTempSensor(char resultJson[]);
-#line 346 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
+#line 350 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
 void showMagneticSensor(char resultJson[]);
 #line 37 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
 void initWiFi()
@@ -109,7 +111,8 @@ void setup()
   hasWifi = false;
   isWsConnected = false;
   msgCount = 0;
-
+  
+  initAll();
   int ret = initIoTDevKit(1);
   initWiFi();
   if (hasWifi)
@@ -145,8 +148,7 @@ int sensorPressure;
 int sensorMagnetometer;
 int sensorHumidityAndTemperature;
 int sensorIrda;
-void readAndSendData()
-{
+void initAll(){
   const char *firmwareVersion = getDevkitVersion();
   const char *wifiSSID = WiFi.SSID();
   int wifiRSSI = WiFi.RSSI();
@@ -285,6 +287,10 @@ void readAndSendData()
   pinMode(LED_USER, OUTPUT);
   digitalWrite(LED_USER, userLEDState);
 
+}
+
+void readAndSendData()
+{
   char state[2024]={0};
   readSensors(state);
   // Send message to WebSocket server
