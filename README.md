@@ -3,16 +3,40 @@ Sends sensors data as json to hard coded server url from Azure Iot DevKit device
 
 example julia start web socket, the important is to return the: Sec-WebSocket-Accept header with used value  
 
-```using HTTP,JSON
+```using HTTP,JSON,Plots
+gr()
+xCoord=[]
+yCoord=[]
+zCoord=[]
 @async HTTP.WebSockets.listen("172.30.30.110", UInt16(2001)) do ws
     while !eof(ws)
         data = readavailable(ws)
-        println("-----------------------------------------------------------------------")
-        println(String(data))
-
-        write(ws, "Sec-WebSocket-Accept: DdLWT/1JcX+nQFHebYP+rqEx5xI=")
+        write(ws, "Sec-WebSocket-Accept: DdLWT/1JcX+nQFHebYP+rqEx5xI=\r\n")
+        processRequest(JSON.parse(String(data)))
     end
 end
+
+function processRequest(json)
+    println("---------------------------------------------------------")
+    println(json)
+    x,y,z=json["gyroscope"]
+    push!(xCoord,x) 
+    push!(yCoord,y)  
+    push!(zCoord,z)     
+    
+    x,y,z=json["accelerometer"]
+    push!(xCoord,x) 
+    push!(yCoord,y)  
+    push!(zCoord,z) 
+
+    x,y,z=json["magnetometer"]
+    push!(xCoord,x) 
+    push!(yCoord,y)  
+    push!(zCoord,z) 
+
+    display(Plots.plot3d(xCoord,yCoord,zCoord,seriestype = :scatter))
+end
+```
 In WebSocketEcho.ino change webSocketServerUrl  = to your wifi net ip of server
 Response:
 ```{
