@@ -107,7 +107,7 @@ void loop()
     }
   }
 
-  delay(1000);
+  delay(100);
 }
 
 void readAndSendData()
@@ -126,6 +126,20 @@ void readAndSendData()
   {
     Screen.clean();
     Screen.print(0, "WSend failed:");
+  }
+
+// Receive message from WebSocket Server
+  bool isEndOfMessage = false;
+  WebSocketReceiveResult *recvResult = NULL;
+
+  recvResult = wsClient->receive(wsBuffer, sizeof(wsBuffer));
+
+  if (recvResult && recvResult->length > 0)
+  {
+    int len = recvResult->length;
+    isEndOfMessage = recvResult->isEndOfMessage;
+
+    delay(100);
   }
 }
 

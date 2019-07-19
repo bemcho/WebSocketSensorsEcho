@@ -46,19 +46,19 @@ void setup();
 void loop();
 #line 113 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
 void readAndSendData();
-#line 132 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
+#line 146 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
 void readSensors(char resultJson[]);
-#line 165 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
+#line 179 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
 void showIpAddress(char resultJson[]);
-#line 170 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
-void showMotionGyroSensor(char resultJson[]);
-#line 177 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
-void showMotionAccelSensor(char resultJson[]);
 #line 184 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
+void showMotionGyroSensor(char resultJson[]);
+#line 191 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
+void showMotionAccelSensor(char resultJson[]);
+#line 198 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
 void showPressureSensor(char resultJson[]);
-#line 190 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
+#line 204 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
 void showHumidTempSensor(char resultJson[]);
-#line 200 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
+#line 214 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
 void showMagneticSensor(char resultJson[]);
 #line 37 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
 void initWiFi()
@@ -134,7 +134,7 @@ void loop()
     }
   }
 
-  delay(1000);
+  delay(100);
 }
 
 void readAndSendData()
@@ -153,6 +153,20 @@ void readAndSendData()
   {
     Screen.clean();
     Screen.print(0, "WSend failed:");
+  }
+
+// Receive message from WebSocket Server
+  bool isEndOfMessage = false;
+  WebSocketReceiveResult *recvResult = NULL;
+
+  recvResult = wsClient->receive(wsBuffer, sizeof(wsBuffer));
+
+  if (recvResult && recvResult->length > 0)
+  {
+    int len = recvResult->length;
+    isEndOfMessage = recvResult->isEndOfMessage;
+
+    delay(100);
   }
 }
 
