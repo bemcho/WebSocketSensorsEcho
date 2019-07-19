@@ -21,12 +21,10 @@ static int rgbLEDR = 0;
 static int rgbLEDG = 0;
 static int rgbLEDB = 0;
 static bool isWsConnected;
-
-static char buffInfo[128];
-static int buttonAState = 0;
 static int buttonBState = 0;
+static char buffInfo[128];
 
-static char webSocketServerUrl[] = "ws://172.30.30.110:2001/"; // or use ws://demos.kaazing.com/echo
+static char webSocketServerUrl[] = "ws://192.168.100.8:2001/"; // or use ws://demos.kaazing.com/echo
 static WebSocketClient* wsClient;
 char wsBuffer[1024];
 char wifiBuff[128];
@@ -65,11 +63,12 @@ bool connectWebSocket()
   isWsConnected = wsClient->connect();
   if (isWsConnected)
   {
-    Screen.print(1, "Connect WS success.");
+    Screen.print(1, "Connect WS -> OK.");
   }
   else
   {
-    Screen.print(1, "Connect WS failed.");
+    Screen.print(1, "Connect WS -> failed.");
+    Screen.print(1, "B to reset WS.");
   }
 
   return isWsConnected;
@@ -93,6 +92,25 @@ void setup()
 
 void loop()
 {
+
+if (getButtonBState())
+  {
+    // Button B is pushed down
+    buttonBState = 1;
+  }
+  else
+  {
+    // Button B is released
+    if (buttonBState)
+    {
+     initWiFi();
+     delete wsClient;
+     wsClient = NULL;
+     connectWebSocket();
+     buttonBState = 0;
+     Serial.print("WS reseting ...");
+    }
+  }
   if (hasWifi)
   {
     if (!isWsConnected)
@@ -118,17 +136,16 @@ void readAndSendData()
   int res = wsClient->send(state,strlen(state));
   if (res > 0)
   {
-    Screen.clean();
-    Screen.print(0, "WSend OK:");
+    Screen.print(0, "WSend -> OK");
     msgCount++;
   }
   else
   {
-    Screen.clean();
-    Screen.print(0, "WSend failed:");
+    Screen.print(0, "WSend -> failed:");
+    Screen.print(1, "B to reset WS.");
   }
 
-// Receive message from WebSocket Server
+// Receive message from WebSofcket Server
   bool isEndOfMessage = false;
   WebSocketReceiveResult *recvResult = NULL;
 
