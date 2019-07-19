@@ -1,4 +1,4 @@
-Sends sensors data as json to hard coded server url
+Sends sensors data as json to hard coded server url from Azure Iot DevKit device
 
 
 julia start web socket 
