@@ -2,6 +2,8 @@
 #line 1 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
 #include "Arduino.h"
 #include "AZ3166WiFi.h"
+#include "http_client.h"
+#include "IoT_DevKit_HW.h"
 #include "DevKitMQTTClient.h"
 #include "SystemVersion.h"
 #include "Sensor.h"
@@ -23,25 +25,41 @@ static int rgbLEDG = 0;
 static int rgbLEDB = 0;
 static bool isWsConnected;
 
+static char buffInfo[128];
+static int buttonAState = 0;
+static int buttonBState = 0;
+
 static char webSocketServerUrl[] = "ws://172.30.30.110:2001/"; // or use ws://demos.kaazing.com/echo
 static WebSocketClient* wsClient;
 char wsBuffer[1024];
 char wifiBuff[128];
 int msgCount;
 
-#line 30 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
+#define READ_ENV_INTERVAL 2000
+
+#line 38 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
 void initWiFi();
-#line 50 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
+#line 58 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
 bool connectWebSocket();
-#line 73 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
+#line 81 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
 void setup();
-#line 88 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
+#line 97 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
 void loop();
-#line 113 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
+#line 122 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
 void readAndSendData();
-#line 276 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
+#line 285 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
 void readSensors(char resultJson[]);
-#line 30 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
+#line 317 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
+void showMotionGyroSensor(char resultJson[]);
+#line 324 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
+void showMotionAccelSensor(char resultJson[]);
+#line 331 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
+void showPressureSensor(char resultJson[]);
+#line 344 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
+void showHumidTempSensor();
+#line 361 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
+void showMagneticSensor(char resultJson[]);
+#line 38 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
 void initWiFi()
 {
   Screen.print("WiFi \r\n \r\nConnecting...\r\n             \r\n");
@@ -87,6 +105,7 @@ bool connectWebSocket()
 
 void setup()
 {
+  int ret = initIoTDevKit(1);
   hasWifi = false;
   isWsConnected = false;
   msgCount = 0;
@@ -265,7 +284,7 @@ void readAndSendData()
   pinMode(LED_USER, OUTPUT);
   digitalWrite(LED_USER, userLEDState);
 
-  char state[500]={0};
+  char state[1024]={0};
   readSensors(state);
   // Send message to WebSocket server
   int res = wsClient->send(state,strlen(state));
@@ -300,12 +319,16 @@ void readSensors(char resultJson[])
     ht_sensor->getHumidity(&humidity);
 
     pressureSensor->getPressure(&pressure);
-    
-    char buff[128];
-    sprintf(buff, "Environment \r\n Temp:%s%c    \r\n Humidity:%s%c  \r\n Atm: %s%s",f2s(temperature, 1),temperatureUnit, f2s(humidity, 1), humidityUnit, f2s(pressure,1), pressureUnit);
-    Screen.print(buff);
 
-    sprintf(resultJson, "{\"temperature\":%s,\"temperature_unit\":\"%c\",\"humidity\":%s,\"humidity_unit\":\"%c\",\"pressure\":%s,\"pressure_unit\":\"%s\"}", f2s(temperature, 1), temperatureUnit,f2s(humidity, 1), humidityUnit,f2s(pressure, 1), pressureUnit);
+    char resultGyro[64] = {0}; 
+    showMotionGyroSensor(resultGyro);
+
+    char resultAccele[64] = {0}; 
+    showMotionAccelSensor(resultAccele);
+
+    char resultMagnet[64] = {0};
+    showMagneticSensor(resultMagnet);
+    sprintf(resultJson, "{\"ip_address\":\"%s\",\"temperature\":%s,\"temperature_unit\":\"%c\",\"humidity\":%s,\"humidity_unit\":\"%c\",\"pressure\":%s,\"pressure_unit\":\"%s\", %s ,%s, %s}", WiFi.localIP().get_address(), f2s(temperature, 1), temperatureUnit,f2s(humidity, 1), humidityUnit,f2s(pressure, 1), pressureUnit, resultGyro,resultAccele,resultMagnet);
   }
   catch(int error)
   {
@@ -313,3 +336,55 @@ void readSensors(char resultJson[])
   }
 }
 
+#define READ_ENV_INTERVAL 2000
+static volatile uint64_t msReadEnvData = 0;
+
+void showMotionGyroSensor(char resultJson[])
+{
+  int x, y, z;
+  getDevKitGyroscopeValue(&x, &y, &z);
+  sprintf(resultJson, "\"Gyroscope\" : [ x:%d, y:%d, z:%d ]", x, y, z);
+}
+
+void showMotionAccelSensor(char resultJson[])
+{
+  int x, y, z;
+  getDevKitAcceleratorValue(&x, &y, &z);
+  sprintf(resultJson, "\"Accelerometer\" : [ x:%d, y:%d, z:%d]" , x, y, z);
+}
+
+void showPressureSensor(char resultJson[])
+{
+  uint64_t ms = SystemTickCounterRead() - msReadEnvData;
+  if (ms < READ_ENV_INTERVAL)
+  {
+    return;
+  }
+
+  float pressure = getDevKitPressureValue();
+  sprintf(resultJson, "Environment\r\nPressure: \r\n   %0.2f hPa\r\n  ", pressure);
+  msReadEnvData = SystemTickCounterRead();
+}
+
+void showHumidTempSensor()
+{
+  uint64_t ms = SystemTickCounterRead() - msReadEnvData;
+  if (ms < READ_ENV_INTERVAL)
+  {
+    return;
+  }
+  float tempC = getDevKitTemperatureValue(0);
+  float tempF = tempC * 1.8 + 32;
+  float humidity = getDevKitHumidityValue();
+
+  snprintf(buffInfo, sizeof(buffInfo), "Environment \r\n Temp:%0.2f F \r\n      %0.2f C \r\n Humidity:%0.2f%%", tempF, tempC, humidity);
+  textOutDevKitScreen(0, buffInfo, 1);
+
+  msReadEnvData = SystemTickCounterRead();
+}
+
+void showMagneticSensor(char resultJson[])
+{
+  int x, y, z;
+  getDevKitMagnetometerValue(&x, &y, &z);
+  sprintf(resultJson, "\"Magnetometer\" :[ x:%d, y:%d, z:%d]  ", x, y, z);}

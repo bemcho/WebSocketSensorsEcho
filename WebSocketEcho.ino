@@ -1,5 +1,7 @@
 #include "Arduino.h"
 #include "AZ3166WiFi.h"
+#include "http_client.h"
+#include "IoT_DevKit_HW.h"
 #include "DevKitMQTTClient.h"
 #include "SystemVersion.h"
 #include "Sensor.h"
@@ -21,11 +23,17 @@ static int rgbLEDG = 0;
 static int rgbLEDB = 0;
 static bool isWsConnected;
 
+static char buffInfo[128];
+static int buttonAState = 0;
+static int buttonBState = 0;
+
 static char webSocketServerUrl[] = "ws://172.30.30.110:2001/"; // or use ws://demos.kaazing.com/echo
 static WebSocketClient* wsClient;
 char wsBuffer[1024];
 char wifiBuff[128];
 int msgCount;
+
+#define READ_ENV_INTERVAL 2000
 
 void initWiFi()
 {
@@ -72,6 +80,7 @@ bool connectWebSocket()
 
 void setup()
 {
+  int ret = initIoTDevKit(1);
   hasWifi = false;
   isWsConnected = false;
   msgCount = 0;
@@ -250,7 +259,7 @@ void readAndSendData()
   pinMode(LED_USER, OUTPUT);
   digitalWrite(LED_USER, userLEDState);
 
-  char state[500]={0};
+  char state[1024]={0};
   readSensors(state);
   // Send message to WebSocket server
   int res = wsClient->send(state,strlen(state));
@@ -285,11 +294,72 @@ void readSensors(char resultJson[])
     ht_sensor->getHumidity(&humidity);
 
     pressureSensor->getPressure(&pressure);
-    
-    sprintf(resultJson, "{\"temperature\":%s,\"temperature_unit\":\"%c\",\"humidity\":%s,\"humidity_unit\":\"%c\",\"pressure\":%s,\"pressure_unit\":\"%s\"}", f2s(temperature, 1), temperatureUnit,f2s(humidity, 1), humidityUnit,f2s(pressure, 1), pressureUnit);
+
+    char resultGyro[64] = {0}; 
+    showMotionGyroSensor(resultGyro);
+
+    char resultAccele[64] = {0}; 
+    showMotionAccelSensor(resultAccele);
+
+    char resultMagnet[64] = {0};
+    showMagneticSensor(resultMagnet);
+    sprintf(resultJson, "{\"ip_address\":\"%s\",\"temperature\":%s,\"temperature_unit\":\"%c\",\"humidity\":%s,\"humidity_unit\":\"%c\",\"pressure\":%s,\"pressure_unit\":\"%s\", %s ,%s, %s}", WiFi.localIP().get_address(), f2s(temperature, 1), temperatureUnit,f2s(humidity, 1), humidityUnit,f2s(pressure, 1), pressureUnit, resultGyro,resultAccele,resultMagnet);
   }
   catch(int error)
   {
     LogError("*** Read sensor failed: %d",error);
   }
 }
+
+#define READ_ENV_INTERVAL 2000
+static volatile uint64_t msReadEnvData = 0;
+
+void showMotionGyroSensor(char resultJson[])
+{
+  int x, y, z;
+  getDevKitGyroscopeValue(&x, &y, &z);
+  sprintf(resultJson, "\"Gyroscope\" : [ x:%d, y:%d, z:%d ]", x, y, z);
+}
+
+void showMotionAccelSensor(char resultJson[])
+{
+  int x, y, z;
+  getDevKitAcceleratorValue(&x, &y, &z);
+  sprintf(resultJson, "\"Accelerometer\" : [ x:%d, y:%d, z:%d]" , x, y, z);
+}
+
+void showPressureSensor(char resultJson[])
+{
+  uint64_t ms = SystemTickCounterRead() - msReadEnvData;
+  if (ms < READ_ENV_INTERVAL)
+  {
+    return;
+  }
+
+  float pressure = getDevKitPressureValue();
+  sprintf(resultJson, "Environment\r\nPressure: \r\n   %0.2f hPa\r\n  ", pressure);
+  msReadEnvData = SystemTickCounterRead();
+}
+
+void showHumidTempSensor()
+{
+  uint64_t ms = SystemTickCounterRead() - msReadEnvData;
+  if (ms < READ_ENV_INTERVAL)
+  {
+    return;
+  }
+  float tempC = getDevKitTemperatureValue(0);
+  float tempF = tempC * 1.8 + 32;
+  float humidity = getDevKitHumidityValue();
+
+  snprintf(buffInfo, sizeof(buffInfo), "Environment \r\n Temp:%0.2f F \r\n      %0.2f C \r\n Humidity:%0.2f%%", tempF, tempC, humidity);
+  textOutDevKitScreen(0, buffInfo, 1);
+
+  msReadEnvData = SystemTickCounterRead();
+}
+
+void showMagneticSensor(char resultJson[])
+{
+  int x, y, z;
+  getDevKitMagnetometerValue(&x, &y, &z);
+  sprintf(resultJson, "\"Magnetometer\" :[ x:%d, y:%d, z:%d]  ", x, y, z);}

@@ -16,13 +16,13 @@
   },
   {
     "Sourcefile": "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/.build/sketch/WebSocketEcho.ino.cpp",
-    "Include": "DevKitMQTTClient.h",
-    "Includepath": "/home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/libraries/AzureIoT/src"
+    "Include": "IoT_DevKit_HW.h",
+    "Includepath": "/home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/libraries/Sensors/src"
   },
   {
     "Sourcefile": "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/.build/sketch/WebSocketEcho.ino.cpp",
-    "Include": "Sensor.h",
-    "Includepath": "/home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/libraries/Sensors/src"
+    "Include": "DevKitMQTTClient.h",
+    "Includepath": "/home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/libraries/AzureIoT/src"
   },
   {
     "Sourcefile": "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/.build/sketch/WebSocketEcho.ino.cpp",
@@ -51,26 +51,6 @@
   },
   {
     "Sourcefile": "/home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/libraries/WiFi/src/AZ3166WiFiUdp.cpp",
-    "Include": "",
-    "Includepath": ""
-  },
-  {
-    "Sourcefile": "/home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/libraries/AzureIoT/src/AzureIotHub.cpp",
-    "Include": "",
-    "Includepath": ""
-  },
-  {
-    "Sourcefile": "/home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/libraries/AzureIoT/src/DevKitMQTTClient.cpp",
-    "Include": "",
-    "Includepath": ""
-  },
-  {
-    "Sourcefile": "/home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/libraries/AzureIoT/src/DevKitOTAUtils.cpp",
-    "Include": "",
-    "Includepath": ""
-  },
-  {
-    "Sourcefile": "/home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/libraries/AzureIoT/src/DevkitDPSClient.cpp",
     "Include": "",
     "Includepath": ""
   },
@@ -121,6 +101,26 @@
   },
   {
     "Sourcefile": "/home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/libraries/Sensors/src/utility/LSM6DSL_acc_gyro_driver.c",
+    "Include": "",
+    "Includepath": ""
+  },
+  {
+    "Sourcefile": "/home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/libraries/AzureIoT/src/AzureIotHub.cpp",
+    "Include": "",
+    "Includepath": ""
+  },
+  {
+    "Sourcefile": "/home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/libraries/AzureIoT/src/DevKitMQTTClient.cpp",
+    "Include": "",
+    "Includepath": ""
+  },
+  {
+    "Sourcefile": "/home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/libraries/AzureIoT/src/DevKitOTAUtils.cpp",
+    "Include": "",
+    "Includepath": ""
+  },
+  {
+    "Sourcefile": "/home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/libraries/AzureIoT/src/DevkitDPSClient.cpp",
     "Include": "",
     "Includepath": ""
   },

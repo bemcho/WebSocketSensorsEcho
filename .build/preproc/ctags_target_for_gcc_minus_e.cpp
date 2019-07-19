@@ -7,6 +7,8 @@
 # 6 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino" 2
 # 7 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino" 2
 # 8 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino" 2
+# 9 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino" 2
+# 10 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino" 2
 DevI2C *ext_i2c;
 LSM6DSLSensor *acc_gyro;
 LIS2MDLSensor *magnetometer;
@@ -23,11 +25,17 @@ static int rgbLEDG = 0;
 static int rgbLEDB = 0;
 static bool isWsConnected;
 
+static char buffInfo[128];
+static int buttonAState = 0;
+static int buttonBState = 0;
+
 static char webSocketServerUrl[] = "ws://172.30.30.110:2001/"; // or use ws://demos.kaazing.com/echo
 static WebSocketClient* wsClient;
 char wsBuffer[1024];
 char wifiBuff[128];
 int msgCount;
+
+
 
 void initWiFi()
 {
@@ -55,9 +63,9 @@ bool connectWebSocket()
   Screen.print(0, "Connect to WS...");
 
   if (wsClient == 
-# 55 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino" 3 4
+# 63 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino" 3 4
                  __null
-# 55 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
+# 63 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
                      )
   {
     wsClient = new WebSocketClient(webSocketServerUrl);
@@ -78,6 +86,7 @@ bool connectWebSocket()
 
 void setup()
 {
+  int ret = initIoTDevKit(1);
   hasWifi = false;
   isWsConnected = false;
   msgCount = 0;
@@ -150,9 +159,9 @@ void readAndSendData()
     {
       acc_gyro = new LSM6DSLSensor(*ext_i2c, D4, D5);
       sensorInitResult = acc_gyro->init(
-# 146 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino" 3 4
+# 155 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino" 3 4
                                        __null
-# 146 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
+# 155 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
                                            );
       acc_gyro->enableAccelerator();
       acc_gyro->enableGyroscope();
@@ -175,9 +184,9 @@ void readAndSendData()
     {
       ht_sensor = new HTS221Sensor(*ext_i2c);
       sensorInitResult = ht_sensor->init(
-# 167 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino" 3 4
+# 176 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino" 3 4
                                         __null
-# 167 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
+# 176 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
                                             );
 
       if (sensorInitResult == 0)
@@ -198,9 +207,9 @@ void readAndSendData()
     {
       magnetometer = new LIS2MDLSensor(*ext_i2c);
       sensorInitResult = magnetometer->init(
-# 186 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino" 3 4
+# 195 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino" 3 4
                                            __null
-# 186 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
+# 195 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
                                                );
 
       if (sensorInitResult == 0)
@@ -221,9 +230,9 @@ void readAndSendData()
     {
       pressureSensor = new LPS22HBSensor(*ext_i2c);
       sensorInitResult = pressureSensor->init(
-# 205 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino" 3 4
+# 214 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino" 3 4
                                              __null
-# 205 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
+# 214 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
                                                  );
 
       if (sensorInitResult == 0)
@@ -272,7 +281,7 @@ void readAndSendData()
   pinMode(LED_USER, 0x2);
   digitalWrite(LED_USER, userLEDState);
 
-  char state[500]={0};
+  char state[1024]={0};
   readSensors(state);
   // Send message to WebSocket server
   int res = wsClient->send(state,strlen(state));
@@ -308,18 +317,75 @@ void readSensors(char resultJson[])
 
     pressureSensor->getPressure(&pressure);
 
-    char buff[128];
-    sprintf(buff, "Environment \r\n Temp:%s%c    \r\n Humidity:%s%c  \r\n Atm: %s%s",f2s(temperature, 1),temperatureUnit, f2s(humidity, 1), humidityUnit, f2s(pressure,1), pressureUnit);
-    Screen.print(buff);
+    char resultGyro[64] = {0};
+    showMotionGyroSensor(resultGyro);
 
-    sprintf(resultJson, "{\"temperature\":%s,\"temperature_unit\":\"%c\",\"humidity\":%s,\"humidity_unit\":\"%c\",\"pressure\":%s,\"pressure_unit\":\"%s\"}", f2s(temperature, 1), temperatureUnit,f2s(humidity, 1), humidityUnit,f2s(pressure, 1), pressureUnit);
+    char resultAccele[64] = {0};
+    showMotionAccelSensor(resultAccele);
+
+    char resultMagnet[64] = {0};
+    showMagneticSensor(resultMagnet);
+    sprintf(resultJson, "{\"ip_address\":\"%s\",\"temperature\":%s,\"temperature_unit\":\"%c\",\"humidity\":%s,\"humidity_unit\":\"%c\",\"pressure\":%s,\"pressure_unit\":\"%s\", %s ,%s, %s}", WiFi.localIP().get_address(), f2s(temperature, 1), temperatureUnit,f2s(humidity, 1), humidityUnit,f2s(pressure, 1), pressureUnit, resultGyro,resultAccele,resultMagnet);
   }
   catch(int error)
   {
     do{ { if (0) { (void)printf("*** Read sensor failed: %d",error); } { LOGGER_LOG l = xlogging_get_log_function(); if (l != 
-# 297 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino" 3 4
+# 310 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino" 3 4
    __null
-# 297 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
-   ) l(AZ_LOG_ERROR, "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino", __func__, 297, 0x01, "*** Read sensor failed: %d",error); } }; }while((void)0,0);
+# 310 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
+   ) l(AZ_LOG_ERROR, "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino", __func__, 310, 0x01, "*** Read sensor failed: %d",error); } }; }while((void)0,0);
   }
 }
+
+
+static volatile uint64_t msReadEnvData = 0;
+
+void showMotionGyroSensor(char resultJson[])
+{
+  int x, y, z;
+  getDevKitGyroscopeValue(&x, &y, &z);
+  sprintf(resultJson, "\"Gyroscope\" : [ x:%d, y:%d, z:%d ]", x, y, z);
+}
+
+void showMotionAccelSensor(char resultJson[])
+{
+  int x, y, z;
+  getDevKitAcceleratorValue(&x, &y, &z);
+  sprintf(resultJson, "\"Accelerometer\" : [ x:%d, y:%d, z:%d]" , x, y, z);
+}
+
+void showPressureSensor(char resultJson[])
+{
+  uint64_t ms = SystemTickCounterRead() - msReadEnvData;
+  if (ms < 2000)
+  {
+    return;
+  }
+
+  float pressure = getDevKitPressureValue();
+  sprintf(resultJson, "Environment\r\nPressure: \r\n   %0.2f hPa\r\n  ", pressure);
+  msReadEnvData = SystemTickCounterRead();
+}
+
+void showHumidTempSensor()
+{
+  uint64_t ms = SystemTickCounterRead() - msReadEnvData;
+  if (ms < 2000)
+  {
+    return;
+  }
+  float tempC = getDevKitTemperatureValue(0);
+  float tempF = tempC * 1.8 + 32;
+  float humidity = getDevKitHumidityValue();
+
+  snprintf(buffInfo, sizeof(buffInfo), "Environment \r\n Temp:%0.2f F \r\n      %0.2f C \r\n Humidity:%0.2f%%", tempF, tempC, humidity);
+  textOutDevKitScreen(0, buffInfo, 1);
+
+  msReadEnvData = SystemTickCounterRead();
+}
+
+void showMagneticSensor(char resultJson[])
+{
+  int x, y, z;
+  getDevKitMagnetometerValue(&x, &y, &z);
+  sprintf(resultJson, "\"Magnetometer\" :[ x:%d, y:%d, z:%d]  ", x, y, z);}

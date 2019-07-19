@@ -253,6 +253,39 @@
  /home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/cores/arduino/Print.h \
  /home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/libraries/WiFi/src/AZ3166WiFiServer.h \
  /home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/system/mbed-os/features/netsocket/TCPServer.h \
+ /home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/cores/arduino/httpclient/http_client.h \
+ /home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/cores/arduino/httpclient/http_common.h \
+ /home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/cores/arduino/httpclient/http_parser/http_parser.h \
+ /home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/cores/arduino/httpclient/https_request.h \
+ /home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/cores/arduino/httpclient/http_c_response.h \
+ /home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/cores/arduino/httpclient/http_header_builder.h \
+ /home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/cores/arduino/httpclient/http_parsed_url.h \
+ /home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/cores/arduino/TLSSocket.h \
+ /home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/system/mbed-os/features/mbedtls/inc/mbedtls/platform.h \
+ /home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/system/mbed-os/features/mbedtls/inc/mbedtls/config.h \
+ /home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/system/mbed-os/features/mbedtls/platform/inc/platform_mbed.h \
+ /home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/system/mbed-os/features/mbedtls/inc/mbedtls/check_config.h \
+ /home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/system/mbed-os/features/mbedtls/inc/mbedtls/platform_time.h \
+ /home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/system/mbed-os/features/mbedtls/inc/mbedtls/ssl.h \
+ /home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/system/mbed-os/features/mbedtls/inc/mbedtls/bignum.h \
+ /home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/system/mbed-os/features/mbedtls/inc/mbedtls/ecp.h \
+ /home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/system/mbed-os/features/mbedtls/inc/mbedtls/ssl_ciphersuites.h \
+ /home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/system/mbed-os/features/mbedtls/inc/mbedtls/pk.h \
+ /home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/system/mbed-os/features/mbedtls/inc/mbedtls/md.h \
+ /home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/system/mbed-os/features/mbedtls/inc/mbedtls/rsa.h \
+ /home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/system/mbed-os/features/mbedtls/inc/mbedtls/ecdsa.h \
+ /home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/system/mbed-os/features/mbedtls/inc/mbedtls/cipher.h \
+ /home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/system/mbed-os/features/mbedtls/inc/mbedtls/x509_crt.h \
+ /home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/system/mbed-os/features/mbedtls/inc/mbedtls/x509.h \
+ /home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/system/mbed-os/features/mbedtls/inc/mbedtls/asn1.h \
+ /home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/system/mbed-os/features/mbedtls/inc/mbedtls/x509_crl.h \
+ /home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/system/mbed-os/features/mbedtls/inc/mbedtls/ecdh.h \
+ /home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/system/mbed-os/features/mbedtls/inc/mbedtls/entropy.h \
+ /home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/system/mbed-os/features/mbedtls/inc/mbedtls/sha512.h \
+ /home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/system/mbed-os/features/mbedtls/inc/mbedtls/ctr_drbg.h \
+ /home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/system/mbed-os/features/mbedtls/inc/mbedtls/aes.h \
+ /home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/system/mbed-os/features/mbedtls/inc/mbedtls/error.h \
+ /home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/libraries/Sensors/src/IoT_DevKit_HW.h \
  /home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/libraries/AzureIoT/src/DevKitMQTTClient.h \
  /home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/libraries/AzureIoT/src/AzureIotHub.h \
  /home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/system/azure-iot-sdk-c/iothub_client/inc/iothub_client.h \
@@ -304,7 +337,5 @@
  /home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/libraries/WebSocket/src/WebSocketClient.h \
  /home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/cores/arduino/system/SystemWiFi.h \
  /home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/cores/arduino/httpclient/http_common.h \
- /home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/cores/arduino/httpclient/http_parser/http_parser.h \
  /home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/cores/arduino/httpclient/http_parsed_url.h \
- /home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/cores/arduino/httpclient/http_common.h \
  /home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/system/mbed-os/features/netsocket/nsapi_types.h
