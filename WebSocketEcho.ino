@@ -44,7 +44,6 @@ void initWiFi()
     snprintf(wifiBuff, 128, "WiFi Connected\r\n%s\r\n%s\r\n \r\n", WiFi.SSID(), ip.get_address());
     Screen.print(wifiBuff);
 
-    delay(5000);
     hasWifi = true;
   }
   else
@@ -56,7 +55,6 @@ void initWiFi()
 
 bool connectWebSocket()
 {
-  Screen.clean();
   Screen.print(0, "Connect to WS...");
 
   if (wsClient == NULL)
@@ -83,7 +81,6 @@ void setup()
   isWsConnected = false;
   msgCount = 0;
   
-  initAll();
   int ret = initIoTDevKit(1);
   initWiFi();
   if (hasWifi)
@@ -113,158 +110,12 @@ void loop()
   delay(1000);
 }
 
-bool i2cError = false;
-int sensorMotion;
-int sensorPressure;
-int sensorMagnetometer;
-int sensorHumidityAndTemperature;
-int sensorIrda;
-void initAll(){
-  const char *firmwareVersion = getDevkitVersion();
-  const char *wifiSSID = WiFi.SSID();
-  int wifiRSSI = WiFi.RSSI();
-  const char *wifiIP = (const char *)WiFi.localIP().get_address();
-  const char *wifiMask = (const char *)WiFi.subnetMask().get_address();
-  byte mac[6];
-  char macAddress[18];
-  WiFi.macAddress(mac);
-  snprintf(macAddress, 18, "%02x-%02x-%02x-%02x-%02x-%02x", mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
-  try
-  {
-    ext_i2c = new DevI2C(D14, D15);
-    i2cError = false;
-  }
-  catch (int error)
-  {
-    i2cError = true;
-    sensorMotion = 0;
-    sensorPressure = 0;
-    sensorMagnetometer = 0;
-    sensorHumidityAndTemperature = 0;
-    sensorIrda = 0;
-  }
-
-  int sensorInitResult;
-
-  if (!i2cError)
-  {
-    try
-    {
-      acc_gyro = new LSM6DSLSensor(*ext_i2c, D4, D5);
-      sensorInitResult = acc_gyro->init(NULL);
-      acc_gyro->enableAccelerator();
-      acc_gyro->enableGyroscope();
-
-      if (sensorInitResult == 0)
-      {
-        sensorMotion = 1;
-      }
-      else
-      {
-        sensorMotion = 0;
-      }
-    }
-    catch (int error)
-    {
-      sensorMotion = 0;
-    }
-
-    try
-    {
-      ht_sensor = new HTS221Sensor(*ext_i2c);
-      sensorInitResult = ht_sensor->init(NULL);
-
-      if (sensorInitResult == 0)
-      {
-        sensorHumidityAndTemperature = 1;
-      }
-      else
-      {
-        sensorHumidityAndTemperature = 0;
-      }
-    }
-    catch (int error)
-    {
-      sensorHumidityAndTemperature = 0;
-    }
-
-    try
-    {
-      magnetometer = new LIS2MDLSensor(*ext_i2c);
-      sensorInitResult = magnetometer->init(NULL);
-
-      if (sensorInitResult == 0)
-      {
-        sensorMagnetometer = 1;
-      }
-      else
-      {
-        sensorMagnetometer = 0;
-      }
-    }
-    catch (int error)
-    {
-      sensorMagnetometer = 0;
-    }
-
-    try
-    {
-      pressureSensor = new LPS22HBSensor(*ext_i2c);
-      sensorInitResult = pressureSensor->init(NULL);
-
-      if (sensorInitResult == 0)
-      {
-        sensorPressure = 1;
-      }
-      else
-      {
-        sensorPressure = 0;
-      }
-    }
-    catch (int error)
-    {
-      sensorPressure = 0;
-    }
-
-    try
-    {
-      IrdaSensor = new IRDASensor();
-      sensorInitResult = IrdaSensor->init();
-
-      if (sensorInitResult == 0)
-      {
-        sensorIrda = 1;
-      }
-      else
-      {
-        sensorIrda = 0;
-      }
-    }
-    catch (int error)
-    {
-      sensorIrda = 0;
-    }
-  }
-
-  if (rgbLEDState == 0)
-  {
-    rgbLed.turnOff();
-  }
-  else
-  {
-    rgbLed.setColor(rgbLEDR, rgbLEDG, rgbLEDB);
-  }
-
-  pinMode(LED_USER, OUTPUT);
-  digitalWrite(LED_USER, userLEDState);
-
-}
-
 void readAndSendData()
 {
   char state[2024]={0};
   readSensors(state);
   // Send message to WebSocket server
+  connectWebSocket();
   int res = wsClient->send(state,strlen(state));
   if (res > 0)
   {
