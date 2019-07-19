@@ -303,7 +303,7 @@ void readSensors(char resultJson[])
 
     char resultMagnet[64] = {0};
     showMagneticSensor(resultMagnet);
-    sprintf(resultJson, "{\"ip_address\":\"%s\",\"temperature\":%s,\"temperature_unit\":\"%c\",\"humidity\":%s,\"humidity_unit\":\"%c\",\"pressure\":%s,\"pressure_unit\":\"%s\", %s ,%s, %s}", WiFi.localIP().get_address(), f2s(temperature, 1), temperatureUnit,f2s(humidity, 1), humidityUnit,f2s(pressure, 1), pressureUnit, resultGyro,resultAccele,resultMagnet);
+    sprintf(resultJson, "{\"ipAddress\":\"%s\",\"temperature\":%s,\"temperatureUnit\":\"%c\",\"humidity\":%s,\"humidityUnit\":\"%c\",\"pressure\":%s,\"pressure_unit\":\"%s\", %s ,%s, %s}", WiFi.localIP().get_address(), f2s(temperature, 1), temperatureUnit,f2s(humidity, 1), humidityUnit,f2s(pressure, 1), pressureUnit, resultGyro,resultAccele,resultMagnet);
   }
   catch(int error)
   {

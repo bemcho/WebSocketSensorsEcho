@@ -37,29 +37,6 @@ int msgCount;
 
 #define READ_ENV_INTERVAL 2000
 
-#line 38 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
-void initWiFi();
-#line 58 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
-bool connectWebSocket();
-#line 81 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
-void setup();
-#line 97 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
-void loop();
-#line 122 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
-void readAndSendData();
-#line 285 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
-void readSensors(char resultJson[]);
-#line 317 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
-void showMotionGyroSensor(char resultJson[]);
-#line 324 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
-void showMotionAccelSensor(char resultJson[]);
-#line 331 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
-void showPressureSensor(char resultJson[]);
-#line 344 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
-void showHumidTempSensor();
-#line 361 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
-void showMagneticSensor(char resultJson[]);
-#line 38 "/home/etomov/IoTWorkbenchProjects/projects/WebSocket/Device/WebSocketEcho.ino"
 void initWiFi()
 {
   Screen.print("WiFi \r\n \r\nConnecting...\r\n             \r\n");
@@ -328,7 +305,7 @@ void readSensors(char resultJson[])
 
     char resultMagnet[64] = {0};
     showMagneticSensor(resultMagnet);
-    sprintf(resultJson, "{\"ip_address\":\"%s\",\"temperature\":%s,\"temperature_unit\":\"%c\",\"humidity\":%s,\"humidity_unit\":\"%c\",\"pressure\":%s,\"pressure_unit\":\"%s\", %s ,%s, %s}", WiFi.localIP().get_address(), f2s(temperature, 1), temperatureUnit,f2s(humidity, 1), humidityUnit,f2s(pressure, 1), pressureUnit, resultGyro,resultAccele,resultMagnet);
+    sprintf(resultJson, "{\"ipAddress\":\"%s\",\"temperature\":%s,\"temperatureUnit\":\"%c\",\"humidity\":%s,\"humidityUnit\":\"%c\",\"pressure\":%s,\"pressure_unit\":\"%s\", %s ,%s, %s}", WiFi.localIP().get_address(), f2s(temperature, 1), temperatureUnit,f2s(humidity, 1), humidityUnit,f2s(pressure, 1), pressureUnit, resultGyro,resultAccele,resultMagnet);
   }
   catch(int error)
   {
