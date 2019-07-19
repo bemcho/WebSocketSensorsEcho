@@ -286,31 +286,6 @@
  /home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/system/mbed-os/features/mbedtls/inc/mbedtls/aes.h \
  /home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/system/mbed-os/features/mbedtls/inc/mbedtls/error.h \
  /home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/libraries/Sensors/src/IoT_DevKit_HW.h \
- /home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/libraries/AzureIoT/src/DevKitMQTTClient.h \
- /home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/libraries/AzureIoT/src/AzureIotHub.h \
- /home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/system/azure-iot-sdk-c/iothub_client/inc/iothub_client.h \
- /home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/system/azure-iot-sdk-c/c-utility/inc/azure_c_shared_utility/umock_c_prod.h \
- /home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/system/azure-iot-sdk-c/c-utility/inc/azure_c_shared_utility/macro_utils.h \
- /home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/system/azure-iot-sdk-c/iothub_client/inc/iothub_transport_ll.h \
- /home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/system/azure-iot-sdk-c/iothub_client/inc/iothub_client_core_ll.h \
- /home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/system/azure-iot-sdk-c/iothub_client/inc/iothub_client_core_common.h \
- /home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/system/azure-iot-sdk-c/iothub_client/inc/iothub_message.h \
- /home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/system/azure-iot-sdk-c/c-utility/inc/azure_c_shared_utility/map.h \
- /home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/system/azure-iot-sdk-c/c-utility/inc/azure_c_shared_utility/strings.h \
- /home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/system/azure-iot-sdk-c/c-utility/inc/azure_c_shared_utility/strings_types.h \
- /home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/system/azure-iot-sdk-c/c-utility/inc/azure_c_shared_utility/crt_abstractions.h \
- /home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/system/azure-iot-sdk-c/iothub_client/inc/iothub_client_core.h \
- /home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/system/azure-iot-sdk-c/iothub_client/inc/iothub_client_ll.h \
- /home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/system/azure-iot-sdk-c/iothub_client/inc/iothub_message.h \
- /home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/system/azure-iot-sdk-c/c-utility/inc/azure_c_shared_utility/threadapi.h \
- /home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/system/azure-iot-sdk-c/c-utility/inc/azure_c_shared_utility/platform.h \
- /home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/system/azure-iot-sdk-c/c-utility/inc/azure_c_shared_utility/xio.h \
- /home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/system/azure-iot-sdk-c/c-utility/inc/azure_c_shared_utility/optionhandler.h \
- /home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/system/azure-iot-sdk-c/c-utility/inc/azure_c_shared_utility/xlogging.h \
- /home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/system/azure-iot-sdk-c/c-utility/inc/azure_c_shared_utility/agenttime.h \
- /home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/system/azure-iot-sdk-c/c-utility/inc/azure_c_shared_utility/optimize_size.h \
- /home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/system/azure-iot-sdk-c/iothub_client/inc/iothubtransportmqtt.h \
- /home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/system/azure-iot-sdk-c/azureiotcerts.h \
  /home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/libraries/Sensors/src/Sensor.h \
  /home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/libraries/Sensors/src/HTS221Sensor.h \
  /home/etomov/.arduino15/packages/AZ3166/hardware/stm32f4/1.6.2/libraries/Sensors/src/ST_INTERFACES/DevI2C.h \
