@@ -14,3 +14,28 @@ example julia start web socket, the important is to return the: Sec-WebSocket-Ac
     end
 end
 In WebSocketEcho.ino change webSocketServerUrl  = to your wifi net ip of server
+Response:
+```{
+  "ipAddress": "172.30.30.121",
+  "environmentTemp": 29.20,
+  "environmentTempUnit": "C",
+  "humidity": 39.00,
+  "environmentPressure": 948.95,
+  "pressureUnit": "hPa",
+  "gyroscope": [
+    350,
+    490,
+    70
+  ],
+  "accelerometer": [
+    -3,
+    -17,
+    1030
+  ],
+  "magnetometer": [
+    271,
+    -18,
+    -268
+  ]
+}
+```
