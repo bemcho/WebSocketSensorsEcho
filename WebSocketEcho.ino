@@ -318,14 +318,14 @@ void showMotionGyroSensor(char resultJson[])
 {
   int x, y, z;
   getDevKitGyroscopeValue(&x, &y, &z);
-  sprintf(resultJson, "\"Gyroscope\" : [ x:%d, y:%d, z:%d ]", x, y, z);
+  sprintf(resultJson, "\"gyroscope\" : [ %d, %d, %d ]", x, y, z);
 }
 
 void showMotionAccelSensor(char resultJson[])
 {
   int x, y, z;
   getDevKitAcceleratorValue(&x, &y, &z);
-  sprintf(resultJson, "\"Accelerometer\" : [ x:%d, y:%d, z:%d]" , x, y, z);
+  sprintf(resultJson, "\"accelerometer\" : [ %d, %d, %d]" , x, y, z);
 }
 
 void showPressureSensor(char resultJson[])
@@ -362,4 +362,4 @@ void showMagneticSensor(char resultJson[])
 {
   int x, y, z;
   getDevKitMagnetometerValue(&x, &y, &z);
-  sprintf(resultJson, "\"Magnetometer\" :[ x:%d, y:%d, z:%d]  ", x, y, z);}
+  sprintf(resultJson, "\"magnetometer\" :[ %d, %d, %d]  ", x, y, z);}
