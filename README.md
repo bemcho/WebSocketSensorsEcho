@@ -10,40 +10,63 @@ example julia start web socket, the important is to return the: Sec-WebSocket-Ac
 ```
 using HTTP,JSON,Plots
 gr()
-gyro=Dict(:x=>[],:y=>[],:z=>[])
-accelero=Dict(:x=>[],:y=>[],:z=>[])
-magneto=Dict(:x=>[],:y=>[],:z=>[])
-@async HTTP.WebSockets.listen("172.30.30.110", UInt16(2001)) do ws
+gyro = []
+accelero = []
+magneto = []
+temp = []
+pressure = []
+humidity = []
+jsons = Channel(1024)
+
+@async HTTP.WebSockets.listen("192.168.100.8", UInt16(2001)) do ws
     while !eof(ws)
         data = readavailable(ws)
         write(ws, "Sec-WebSocket-Accept: DdLWT/1JcX+nQFHebYP+rqEx5xI=\r\n")
-        processRequest(JSON.parse(String(data)))
+        put!(jsons, JSON.parse(String(data)))
+        #@async processRequest()
     end
 end
 
-function processRequest(json)
-    println("---------------------------------------------------------")
-    println(json)
-    
-    x,y,z=json["gyroscope"]
-    push!(gyro[:x],x)
-    push!(gyro[:y],y)
-    push!(gyro[:z],z)
+function processRequest()
+    while true
+        println("---------------------------------------------------------")
+        json = take!(jsons)
+        println(json)
 
-    display(Plots.plot3d(gyro[:x],gyro[:y],gyro[:z],label="Gyro",color=[:red]))
+        x, y, z = g = json["gyroscope"]
+        println(g)
+        push!(gyro, g)
+        x, y, z = [[xyz[1] for xyz in gyro],[xyz[2] for xyz in gyro],[xyz[3] for xyz in gyro]]
+        plt1 = plotSensors(x, y, z, "Gyro", 1, color = [:red]) 
 
-    x,y,z=json["accelerometer"]
-    push!(accelero[:x],x)
-    push!(accelero[:y],y)
-    push!(accelero[:z],z)
-    display(Plots.plot3d!(accelero[:x],accelero[:y],accelero[:z],label="Accelero",color=[:blue]))
+        x, y, z = g = json["accelerometer"]
+        push!(accelero, g)
+        x, y, z = [[xyz[1] for xyz in accelero],[xyz[2] for xyz in accelero],[xyz[3] for xyz in accelero]]
+        plt2 = plotSensors(x, y, z, "Accelero", 1, color = [:brown]) 
 
-    x,y,z=json["magnetometer"]
-    push!(magneto[:x],x)
-    push!(magneto[:y],y)
-    push!(magneto[:z],z)
-    display(Plots.plot3d!(magneto[:x],magneto[:y],magneto[:z],label="Magneto",color=[:green]))
+        x, y, z = g = json["magnetometer"]
+        push!(magneto, g)
+        x, y, z = [[xyz[1] for xyz in magneto],[xyz[2] for xyz in magneto],[xyz[3] for xyz in magneto]]
+        plt3 = plotSensors(x, y, z, "Magneto", 1, color = [:blue]) 
+
+
+        t = json["environmentTemp"]
+        push!(temp, t)
+
+        h = json["humidity"]
+        push!(humidity, h)
+
+        p = json["environmentPressure"]
+        push!(pressure, p / 100)
+        plt4 = Plots.plot(pressure, temp,xlims = (-250, 250), ylims = (-50, 50),  xlabel = "Pressure", ylabel = "Temperature", layout = 1, legend = false) 
+        display(plot(plt1, plt2, plt3, plt4))
+    end
 end
+function plotSensors(x, y, z, label, layout;color = [:black])
+
+    return  Plots.scatter3d(x, y, z, legend = false, title = label, layout = layout, color = color)   
+end
+processRequest()
 ```
 In WebSocketEcho.ino change webSocketServerUrl  = to your wifi net ip of server
 Response:
