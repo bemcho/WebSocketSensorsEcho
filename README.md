@@ -1,5 +1,9 @@
-Sends sensors data as json to hard coded server url from Azure Iot DevKit device
+#Sends sensors data as json to hard coded server url from Azure Iot DevKit device
 
+## in julia
+> ]
+> add HTTP,JSON,Plots
+> backspace to return
 
 example julia start web socket, the important is to return the: Sec-WebSocket-Accept header with used value  
 
