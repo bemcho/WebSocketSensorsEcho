@@ -47,8 +47,11 @@ function processRequest()
         push!(humidity, h)
 
         p = json["environmentPressure"]
-        push!(pressure, p / 100)
-        plt4 = Plots.plot(pressure, temp,xlims = (-250, 250), ylims = (-50, 50),  xlabel = "Pressure", ylabel = "Temperature", layout = 1, legend = false) 
+        push!(pressure,p/10)
+        plt4 = Plots.plot(1:length(temp), temp, xlabel = "Time", ylabel = "Temperature", ylims=(-50.000,70.000),layout = 1, legend = false,color=[:red]) 
+        plt4 = Plots.plot!(1:length(pressure), pressure, xlabel = "Time", ylabel = "Pressure", ylims=(-100.00,150.00),layout = 1, legend = false,color=[:black]) 
+        plt4 = Plots.plot!(1:length(humidity), humidity, xlabel = "Time", ylabel = "Temperature,Humidity,Pressure", ylims=(0.00,100.00),layout = 1, legend = false,color=[:blue]) 
+
         display(plot(plt1, plt2, plt3, plt4))
     end
 end
