@@ -47,12 +47,12 @@ function processRequest()
         push!(humidity, h)
 
         p = json["environmentPressure"]
-        push!(pressure,p/10)
-        plt4 = Plots.plot(1:length(temp), temp, xlabel = "Time", ylabel = "Temperature", ylims=(-50.000,70.000),layout = 1, legend = false,color=[:red]) 
-        plt4 = Plots.plot!(1:length(pressure), pressure, xlabel = "Time", ylabel = "Pressure", ylims=(-100.00,150.00),layout = 1, legend = false,color=[:black]) 
-        plt4 = Plots.plot!(1:length(humidity), humidity, xlabel = "Time", ylabel = "Temperature,Humidity,Pressure", ylims=(0.00,100.00),layout = 1, legend = false,color=[:blue]) 
+        push!(pressure, p)
+        plt4 = Plots.plot(1:length(temp), temp, xlabel = "Time", ylabel = "Temperature", layout = 1, legend = false, color = [:red]) 
+        plt5 = Plots.plot(1:length(pressure), pressure, xlabel = "Time", ylabel = "Pressure", layout = 1, legend = false, color = [:black]) 
+        plt6 = Plots.plot(1:length(humidity), humidity, xlabel = "Time", ylabel = "Humidity", layout = 1, legend = false, color = [:blue]) 
 
-        display(plot(plt1, plt2, plt3, plt4))
+        display(plot(plt1, plt2, plt3, plt4, plt5, plt6))
     end
 end
 function plotSensors(x, y, z, label, layout;color = [:black])
