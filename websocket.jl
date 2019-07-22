@@ -1,4 +1,4 @@
-using HTTP,JSON,Plots,StatsBase,StatsPlots
+using HTTP,JSON,Plots
 gr()
 gyro = []
 accelero = []
@@ -53,16 +53,16 @@ function processRequest()
         display(plot(plt1, plt2, plt3, plt4, plt5, plt6))
     end
 end
-function plotAxes(x, y, z, title,max=1000.0)
-    mX = max / 2;
-    mY = max / 2;
-    mZ = max / 2;
+function plotAxes(x, y, z, title, max = 500.0)
+    mX = x / 2;
+    mY = y / 2;
+    mZ = z / 2;
     #x
-    plt1 = plot3d([mX,max], [mY,mY + y], [mZ,mZ + z], marker = 1, line = (:arrow, 0.5, 4, :red), xlims = (0.0, 1500.0), ylims = (0.0, 1500.0), zlims = (0.0, 1500.0), legend = false,title=title)
+    plt1 = plot3d([mX,max], [mY,mY + y], [mZ,mZ + z], marker = 1, line = (:arrow, 4, :red), legend = false, title = title)
         #y
-    plot3d!([mX,mX + x], [mY,max], [mZ,mZ + z], marker = 1, line = (:arrow, 0.5, 4, :blue),  xlims = (0.0, 1500.0), ylims = (0.0, 1500.0), zlims = (0.0, 1500.0), legend = false)
+    plot3d!([mX,mX + x], [mY,max], [mZ,mZ + z], marker = 1, line = (:arrow,  4, :blue),   legend = false)
         #z
-    plot3d!([mX,mX + x], [mY,mY + y], [mZ,max], marker = 1, line = (:arrow, 0.5, 4, :green), xlims = (0.0, 1500.0), ylims = (0.0, 1500.0), zlims = (0.0, 1500.0), legend = false)
+    plot3d!([mX,mX + x], [mY,mY + y], [mZ,max], marker = 1, line = (:arrow, 4, :green),  legend = false)
 end
 function plotSensors(x, y, z, label, layout;color = [:black])
 
