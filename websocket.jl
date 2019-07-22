@@ -1,4 +1,4 @@
-using HTTP,JSON,Plots,StatsBase
+using HTTP,JSON,Plots,StatsBase,StatsPlots
 gr()
 gyro = []
 accelero = []
@@ -25,32 +25,16 @@ function processRequest()
 
         x, y, z = g = json["gyroscope"]
         push!(gyro, g)
-        max = 1000.0
-        mX = max/2;
-        mY = max/2;
-        mZ = max/2;
-        #plt1 = plotSensors(x, y, z, "Gyro", 1, color = [:red]) 
-        #x, y, z = [[xyz[1] for xyz in gyro],[xyz[2] for xyz in gyro],[xyz[3] for xyz in gyro]]
-        #plt1 = plotSensors(x, y, z, "Gyro", 1, color = [:red]) 
-
-        plt1 = plot3d([mX,mX], [mY,max], [mZ,mZ], marker = 4,xlims=(0.0,1000.0),ylims=(0.0,1000.0),zlims=(0.0,1000.0),legend = false)
-
-        #y
-        plot3d!([mX,mX+x], [mY,max], [mZ,mZ+z], marker = 4)
-        #x
-        plot3d!([mX,max], [mY,mY+y], [mZ,mZ+z], marker = 4)
-        #z
-        plot3d!([mX,mX+x], [mY,mY+y], [mZ,max], marker = 4)
-
+        plt1 =  plotAxes(x, y, z, "Gyro")
         x, y, z = g = json["accelerometer"]
         push!(accelero, g)
-        x, y, z = [[xyz[1] for xyz in accelero],[xyz[2] for xyz in accelero],[xyz[3] for xyz in accelero]]
-        plt2 = plotSensors(x, y, z, "Accelero", 1, color = [:brown]) 
+        #x, y, z = [[xyz[1] for xyz in accelero],[xyz[2] for xyz in accelero],[xyz[3] for xyz in accelero]]
+        plt2 = plotAxes(x, y, z, "Accelero") 
 
         x, y, z = g = json["magnetometer"]
         push!(magneto, g)
-        x, y, z = [[xyz[1] for xyz in magneto],[xyz[2] for xyz in magneto],[xyz[3] for xyz in magneto]]
-        plt3 = plotSensors(x, y, z, "Magneto", 1, color = [:blue]) 
+        #x, y, z = [[xyz[1] for xyz in magneto],[xyz[2] for xyz in magneto],[xyz[3] for xyz in magneto]]
+        plt3 = plotAxes(x, y, z, "Magneto") 
 
 
         t = json["environmentTemp"]
@@ -69,8 +53,19 @@ function processRequest()
         display(plot(plt1, plt2, plt3, plt4, plt5, plt6))
     end
 end
+function plotAxes(x, y, z, title,max=1000.0)
+    mX = max / 2;
+    mY = max / 2;
+    mZ = max / 2;
+    #x
+    plt1 = plot3d([mX,max], [mY,mY + y], [mZ,mZ + z], marker = 1, line = (:arrow, 0.5, 4, :red), xlims = (0.0, 1500.0), ylims = (0.0, 1500.0), zlims = (0.0, 1500.0), legend = false,title=title)
+        #y
+    plot3d!([mX,mX + x], [mY,max], [mZ,mZ + z], marker = 1, line = (:arrow, 0.5, 4, :blue),  xlims = (0.0, 1500.0), ylims = (0.0, 1500.0), zlims = (0.0, 1500.0), legend = false)
+        #z
+    plot3d!([mX,mX + x], [mY,mY + y], [mZ,max], marker = 1, line = (:arrow, 0.5, 4, :green), xlims = (0.0, 1500.0), ylims = (0.0, 1500.0), zlims = (0.0, 1500.0), legend = false)
+end
 function plotSensors(x, y, z, label, layout;color = [:black])
 
-    return  Plots.scatter3d(x, y, z, legend = false, title = label, layout = layout, color = color, size=size(350, 350))   
+    return  Plots.scatter3d(x, y, z, legend = false, title = label, layout = layout, color = color, size = size(350, 350))   
 end
 processRequest()
