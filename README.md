@@ -2,7 +2,7 @@
 
 ## in julia
 > ]
-> add HTTP,JSON,Plots
+> add HTTP,JSON,Plots,ORCA,PlotlyJS
 > backspace to return
 
 example julia start web socket, the important is to return the: Sec-WebSocket-Accept header with used value  

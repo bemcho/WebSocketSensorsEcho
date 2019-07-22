@@ -24,15 +24,15 @@ function processRequest()
         println(json)
 
         x, y, z = g = json["gyroscope"]
-        push!(gyro, g)
+        #push!(gyro, g)
         plt1 =  plotAxes(x, y, z, "Gyro")
         x, y, z = g = json["accelerometer"]
-        push!(accelero, g)
+       # push!(accelero, g)
         #x, y, z = [[xyz[1] for xyz in accelero],[xyz[2] for xyz in accelero],[xyz[3] for xyz in accelero]]
         plt2 = plotAxes(x, y, z, "Accelero") 
 
         x, y, z = g = json["magnetometer"]
-        push!(magneto, g)
+        #push!(magneto, g)
         #x, y, z = [[xyz[1] for xyz in magneto],[xyz[2] for xyz in magneto],[xyz[3] for xyz in magneto]]
         plt3 = plotAxes(x, y, z, "Magneto") 
 
@@ -58,11 +58,13 @@ function plotAxes(x, y, z, title, max = 500.0)
     mY = y / 2;
     mZ = z / 2;
     #x
-    plt1 = plot3d([mX,max], [mY,mY + y], [mZ,mZ + z], marker = 1, line = (:arrow, 4, :red), legend = false, title = title)
+    plt1 = plot3d([-max,max], [-max,-max], [-max,-max], marker = 1, line = (:arrow, 4, :red), legend = false, title = title)
         #y
-    plot3d!([mX,mX + x], [mY,max], [mZ,mZ + z], marker = 1, line = (:arrow,  4, :blue),   legend = false)
+    plot3d!([-max,-max], [-max,max], [-max,-max], marker = 1, line = (:arrow,  4, :blue),   legend = false)
         #z
-    plot3d!([mX,mX + x], [mY,mY + y], [mZ,max], marker = 1, line = (:arrow, 4, :green),  legend = false)
+    plot3d!([-max,-max], [-max,-max], [-max,max], marker = 1, line = (:arrow, 4, :green),  legend = false)
+         #R\_b
+    plot3d!([-max, if x < -max || x > max max else x end], [-max,if y < -max  || y > max max else  y end], [-max,if z < -max  || z > max max else  z end], marker = 1, line = (:arrow, 4, :black),  legend = false)
 end
 function plotSensors(x, y, z, label, layout;color = [:black])
 
