@@ -13,12 +13,12 @@ jsons = Channel(1024)
         data = readavailable(ws)
         write(ws, "Sec-WebSocket-Accept: DdLWT/1JcX+nQFHebYP+rqEx5xI=\r\n")
         put!(jsons, JSON.parse(String(data)))
-        #@async processRequest()
+        @async processRequest()
     end
 end
 
 function processRequest()
-    while true
+    #while true
         println("---------------------------------------------------------")
         json = take!(jsons)
         println(json)
@@ -51,18 +51,18 @@ function processRequest()
         
 
         display(plot(plt1, plt2, plt3, plt4, plt5, plt6))
-    end
+    #end
 end
 function plotAxes(x, y, z, title, max = 500.0, origin = 0.0)
     mX = x / 2;
     mY = y / 2;
     mZ = z / 2;
     #x
-    plt1 = plot3d([-max,max], [origin,origin], [origin,origin], marker = 1, line = (:arrow, 2, :red), legend = false, title = title)
+    plt1 = plot3d([-max,max], [-(origin+y),origin+y], [origin,origin], marker = 1, line = (:arrow, 2, :red), legend = false, title = title)
         #z
-    plot3d!([origin,origin], [-max,max], [origin,origin], marker = 1, line = (:arrow,  2, :blue),   legend = false)
+    plot3d!([origin,origin], [-max,max], [-(origin+z),origin+z], marker = 1, line = (:arrow,  2, :blue),   legend = false)
         #y
-    plot3d!([origin,origin], [origin,origin], [-max,max], marker = 1, line = (:arrow, 2, :green),  legend = false)
+    plot3d!([origin,origin], [-(origin+x),origin+x], [-max,max], marker = 1, line = (:arrow, 2, :green),  legend = false)
          #R\_b
    # plot3d!([-max, if x < -max || x > max max else x end], [-max,if y < -max  || y > max max else  y end], [-max,if z < -max  || z > max max else  z end], marker = 1, line = (:arrow, 2, :black),  legend = false)
 end
