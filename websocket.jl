@@ -29,12 +29,12 @@ function processRequest()
         x, y, z = g = json["accelerometer"]
        # push!(accelero, g)
         #x, y, z = [[xyz[1] for xyz in accelero],[xyz[2] for xyz in accelero],[xyz[3] for xyz in accelero]]
-        plt2 = plotAxes(x, y, z, "Accelero", 2000) 
+        plt2 = plotAxes(x, y, z, "Accelero", 5000) 
 
         x, y, z = g = json["magnetometer"]
         #push!(magneto, g)
         #x, y, z = [[xyz[1] for xyz in magneto],[xyz[2] for xyz in magneto],[xyz[3] for xyz in magneto]]
-        plt3 = plotAxes(x, y, z, "Magneto", 1000) 
+        plt3 = plotAxes(x, y, z, "Magneto", 5000) 
 
 
         t = json["environmentTemp"]
