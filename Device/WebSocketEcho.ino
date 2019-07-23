@@ -29,7 +29,8 @@ static WebSocketClient* wsClient;
 char wsBuffer[1024];
 char wifiBuff[128];
 int msgCount;
-
+const static long RESET_TIMEOUT=5000;
+long lastTimeSuccess=0L;
 #define READ_ENV_INTERVAL 2000
 
 void initWiFi()
@@ -64,6 +65,7 @@ bool connectWebSocket()
   if (isWsConnected)
   {
     Screen.print(1, "Connect WS -> OK.");
+    lastTimeSuccess=SystemTickCounterRead() ;
   }
   else
   {
@@ -93,6 +95,11 @@ void setup()
 void loop()
 {
 
+long now = SystemTickCounterRead();
+if(now-lastTimeSuccess > RESET_TIMEOUT){
+  resetNet();
+}
+
 if (getButtonBState())
   {
     // Button B is pushed down
@@ -117,6 +124,9 @@ if (getButtonBState())
     if (isWsConnected)
     {
       readAndSendData();
+    }else{
+      Screen.print("Sleeping ...");
+      delay(1000);
     }
   }
 
