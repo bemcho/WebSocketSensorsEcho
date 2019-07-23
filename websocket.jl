@@ -12,45 +12,47 @@ jsons = Channel(1024)
     while !eof(ws)
         data = readavailable(ws)
         write(ws, "Sec-WebSocket-Accept: DdLWT/1JcX+nQFHebYP+rqEx5xI=\r\n")
-        put!(jsons, JSON.parse(String(data)))
+        put!(jsons, data)
         @async processRequest()
     end
 end
 
 function processRequest()
     #while true
-        println("---------------------------------------------------------")
-        json = take!(jsons)
-        println(json)
+    println("---------------------------------------------------------")
+    data = String(take!(jsons))
+    println(data)
 
-        x, y, z = g = json["gyroscope"]
+    json = JSON.parse(data)
+
+    x, y, z = g = json["gyroscope"]
         #push!(gyro, g)
-        plt1 =  plotAxes(x, y, z, "Gyro", 60000)
-        x, y, z = g = json["accelerometer"]
+    plt1 =  plotAxes(x, y, z, "Gyro", 6000)
+    x, y, z = g = json["accelerometer"]
        # push!(accelero, g)
         #x, y, z = [[xyz[1] for xyz in accelero],[xyz[2] for xyz in accelero],[xyz[3] for xyz in accelero]]
-        plt2 = plotAxes(x, y, z, "Accelero", 5000) 
+    plt2 = plotAxes(x, y, z, "Accelero", 1500) 
 
-        x, y, z = g = json["magnetometer"]
+    x, y, z = g = json["magnetometer"]
         #push!(magneto, g)
         #x, y, z = [[xyz[1] for xyz in magneto],[xyz[2] for xyz in magneto],[xyz[3] for xyz in magneto]]
-        plt3 = plotAxes(x, y, z, "Magneto", 5000) 
+    plt3 = plotAxes(x, y, z, "Magneto", 1000) 
 
 
-        t = json["environmentTemp"]
-        push!(temp, t)
-        plt4 = Plots.plot(1:length(temp), temp, xlabel = "Time", ylabel = "Temperature", layout = 1, ylims = (-40, 120), legend = false, color = [:red]) 
+    t = json["environmentTemp"]
+    push!(temp, t)
+    plt4 = Plots.plot(1:length(temp), temp, xlabel = "Time", ylabel = "Temperature", layout = 1, ylims = (-40, 120), legend = false, color = [:red]) 
 
-        h = json["humidity"]
-        push!(humidity, h)
-        plt6 = Plots.plot(1:length(humidity), humidity, xlabel = "Time", ylabel = "Humidity", layout = 1, ylims = (0, 100), legend = false, color = [:blue]) 
+    h = json["humidity"]
+    push!(humidity, h)
+    plt6 = Plots.plot(1:length(humidity), humidity, xlabel = "Time", ylabel = "Humidity", layout = 1, ylims = (0, 100), legend = false, color = [:blue]) 
 
-        p = json["environmentPressure"]
-        push!(pressure, p)
-        plt5 = Plots.plot(1:length(pressure), pressure, xlabel = "Time", ylabel = "Pressure", layout = 1, ylims = (260, 1260), legend = false, color = [:black]) 
+    p = json["environmentPressure"]
+    push!(pressure, p)
+    plt5 = Plots.plot(1:length(pressure), pressure, xlabel = "Time", ylabel = "Pressure", layout = 1, ylims = (260, 1260), legend = false, color = [:black]) 
         
 
-        display(plot(plt1, plt2, plt3, plt4, plt5, plt6))
+    display(plot(plt1, plt2, plt3, plt4, plt5, plt6))
     #end
 end
 function plotAxes(x, y, z, title, max = 500.0, origin = 0.0)
@@ -58,11 +60,11 @@ function plotAxes(x, y, z, title, max = 500.0, origin = 0.0)
     mY = y / 2;
     mZ = z / 2;
     #x
-    plt1 = plot3d([-max,max], [-(origin+y),origin+y], [origin,origin], marker = 1, line = (:arrow, 2, :red), legend = false, title = title)
+    plt1 = plot3d([-(max + x),max + x], [-(origin + y),origin + y], [-(origin + z),origin + z], xlims = (-max, max), ylims = (-max, max), zlims = (-max, max), marker = 1, line = (:arrow, 2, :red), legend = false, title = title)
         #z
-    plot3d!([origin,origin], [-max,max], [-(origin+z),origin+z], marker = 1, line = (:arrow,  2, :blue),   legend = false)
+    plot3d!([-(origin + x),origin + x], [-(max + y),max + y], [-(origin + z),origin + z], marker = 1, line = (:arrow,  2, :blue),   legend = false)
         #y
-    plot3d!([origin,origin], [-(origin+x),origin+x], [-max,max], marker = 1, line = (:arrow, 2, :green),  legend = false)
+    plot3d!([-(origin + x),origin + x], [-(origin + y),origin + y], [-(max + z),max + z], marker = 1, line = (:arrow, 2, :green),  legend = false)
          #R\_b
    # plot3d!([-max, if x < -max || x > max max else x end], [-max,if y < -max  || y > max max else  y end], [-max,if z < -max  || z > max max else  z end], marker = 1, line = (:arrow, 2, :black),  legend = false)
 end
