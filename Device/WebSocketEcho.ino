@@ -7,11 +7,6 @@
 #include "parson.h"
 #include "WebSocketClient.h"
 DevI2C *ext_i2c;
-LSM6DSLSensor *acc_gyro;
-LIS2MDLSensor *magnetometer;
-HTS221Sensor *ht_sensor;
-IRDASensor *IrdaSensor;
-LPS22HBSensor *pressureSensor;
 RGB_LED rgbLed;
 
 static bool hasWifi = false;
@@ -65,7 +60,6 @@ bool connectWebSocket()
   if (isWsConnected)
   {
     Screen.print(1, "Connect WS -> OK.");
-    lastTimeSuccess=SystemTickCounterRead() ;
   }
   else
   {
@@ -95,12 +89,7 @@ void setup()
 void loop()
 {
 
-long now = SystemTickCounterRead();
-if(now-lastTimeSuccess > RESET_TIMEOUT){
-  resetNet();
-}
-
-if (getButtonBState())
+  if (getButtonBState())
   {
     // Button B is pushed down
     buttonBState = 1;
@@ -113,11 +102,11 @@ if (getButtonBState())
       resetNet();
     }
   }
+
   if (hasWifi)
   {
     if (!isWsConnected)
     {
-
       connectWebSocket();
     }
 
@@ -128,6 +117,11 @@ if (getButtonBState())
       Screen.print("Sleeping ...");
       delay(1000);
     }
+
+    if(SystemTickCounterRead()-lastTimeSuccess > RESET_TIMEOUT){
+        resetNet();
+        lastTimeSuccess=SystemTickCounterRead();
+      }
   }
 
   delay(100);
@@ -151,7 +145,7 @@ void readAndSendData()
   if (res > 0)
   {
     Screen.print(0, "WSend -> OK");
-    msgCount++;
+    lastTimeSuccess=SystemTickCounterRead() ;
   }
   else
   {
@@ -169,8 +163,6 @@ void readAndSendData()
   {
     int len = recvResult->length;
     isEndOfMessage = recvResult->isEndOfMessage;
-
-    delay(100);
   }
 }
 
