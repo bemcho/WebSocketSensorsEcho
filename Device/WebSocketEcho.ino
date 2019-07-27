@@ -164,14 +164,6 @@ getDevKitAcceleratorValue(&x, &y, &z);
 
 void resetNet()
 {
-  calibratedGyro[0]=0;
-  calibratedGyro[1]=0;
-  calibratedGyro[2]=0;
-
-  calibratedAccelero[0]=0;
-  calibratedAccelero[1]=0;
-  calibratedAccelero[2]=0;
-
   delete wsClient;
   wsClient = NULL;
   connectWebSocket();
