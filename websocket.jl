@@ -68,7 +68,7 @@ function normalize(x)
 end
 function plotAccelero(title, max = 500, origin = 0.0)
 
-    plot3d([xyz[1] + origin for xyz in acceleroGApplied], [xyz[2] + origin for xyz in acceleroGApplied], [xyz[3] + origin for xyz in acceleroGApplied], title = title, legend = false, line = (:path3d, :solid, :arrow, 2, :blue),xlims=(-500,500),ylims=(-500,500),zlims=(-500,500))
+    plot3d([xyz[1] + origin for xyz in acceleroGApplied], [xyz[2] + origin for xyz in acceleroGApplied], [xyz[3] + origin for xyz in acceleroGApplied], title = title, legend = false, line = (:steppre, :dot, :arrow, 2, :blue),xlims=(-2000,2000),ylims=(-2000,2000),zlims=(-2000,2000))
 end
 
 function plotAxes(x, y, z, title, max = 500.0, origin = 0.0)
