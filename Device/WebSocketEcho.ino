@@ -16,6 +16,7 @@ static int rgbLEDR = 0;
 static int rgbLEDG = 0;
 static int rgbLEDB = 0;
 static bool isWsConnected;
+static int buttonAState = 0;
 static int buttonBState = 0;
 static char buffInfo[128];
 
@@ -26,7 +27,9 @@ char wifiBuff[128];
 int msgCount;
 const static long RESET_TIMEOUT=5000;
 long lastTimeSuccess=0L;
-#define READ_ENV_INTERVAL 2000
+
+int calibratedGyro[3]={0,0,0};
+int calibratedAccelero[3]={0,0,0};
 
 void initWiFi()
 {
@@ -60,6 +63,7 @@ bool connectWebSocket()
   if (isWsConnected)
   {
     Screen.print(1, "Connect WS -> OK.");
+    Screen.print(1, "A to calibrate.");
   }
   else
   {
@@ -88,6 +92,20 @@ void setup()
 
 void loop()
 {
+
+ if (getButtonAState())
+  {
+    // Button B is pushed down
+    buttonAState = 1;
+  }
+  else
+  {
+    // Button B is released
+    if (buttonAState)
+    {
+      calibrate();
+    }
+  }
 
   if (getButtonBState())
   {
@@ -126,14 +144,39 @@ void loop()
 
   delay(100);
 }
+/**
+ * Takes current values of sensors (gyro,accelero) and threats them as zero
+ */
+void calibrate(){
+  Screen.print("Calibrating ...");
+
+  int x, y, z;
+  getDevKitGyroscopeValue(&x, &y, &z);
+  calibratedGyro[0] = x;
+  calibratedGyro[1] = y;
+  calibratedGyro[2] = z;
+
+getDevKitAcceleratorValue(&x, &y, &z);
+  calibratedAccelero[0] = x;
+  calibratedAccelero[1] = y;
+  calibratedAccelero[2] = z;
+}
 
 void resetNet()
 {
-     delete wsClient;
-     wsClient = NULL;
-     connectWebSocket();
-     buttonBState = 0;
-     Serial.print("WS reseting ...");
+  calibratedGyro[0]=0;
+  calibratedGyro[1]=0;
+  calibratedGyro[2]=0;
+
+  calibratedAccelero[0]=0;
+  calibratedAccelero[1]=0;
+  calibratedAccelero[2]=0;
+
+  delete wsClient;
+  wsClient = NULL;
+  connectWebSocket();
+  buttonBState = 0;
+  Serial.print("WS reseting ...");
 }
 
 void readAndSendData()
@@ -196,9 +239,6 @@ void readSensors(char resultJson[])
   }
 }
 
-#define READ_ENV_INTERVAL 2000
-static volatile uint64_t msReadEnvData = 0;
-
 void showIpAddress(char resultJson[])
 {
   sprintf(resultJson,"\"ipAddress\":\"%s\"",WiFi.localIP().get_address());
@@ -208,6 +248,9 @@ void showMotionGyroSensor(char resultJson[])
 {
   int x, y, z;
   getDevKitGyroscopeValue(&x, &y, &z);
+  x-=calibratedGyro[0];
+  y-=calibratedGyro[1];
+  z-=calibratedGyro[2];
   sprintf(resultJson, "\"gyroscope\":[ %d, %d, %d ]", x, y, z);
 }
 
@@ -215,6 +258,9 @@ void showMotionAccelSensor(char resultJson[])
 {
   int x, y, z;
   getDevKitAcceleratorValue(&x, &y, &z);
+  x-=calibratedAccelero[0];
+  y-=calibratedAccelero[1];
+  z-=calibratedAccelero[2];
   sprintf(resultJson, "\"accelerometer\":[ %d, %d, %d]" , x, y, z);
 }
 
